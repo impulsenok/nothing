@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/">
+
+        <title>Game</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    </head>
+    <body>
+
+        <!--PlayGround here -->
+        <canvas id="battle-ground" width="700" height="700"></canvas>
+
+
+        <div id="game-over-overlay">
+        </div>
+
+        <!--<div id="game-over">-->
+            <!--<h1>GAME OVER</h1>-->
+            <!--<button id="play-again">Play Again</button>-->
+        <!--</div>-->
+
+        <div class="wrapper">
+            <div id="instructions">
+                <div>
+                    move with <span class="key">arrows</span> or <span class="key">wasd</span>
+                </div>
+                <div>
+                    shoot with <span class="key">space</span>
+                </div>
+            </div>
+
+            <div id="score"></div>
+        </div>
+    </body>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
+    <script src="socket_processing.js"></script>
+</html>

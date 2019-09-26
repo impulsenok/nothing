@@ -1,0 +1,44 @@
+m# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/public
+
+# dependencies
+node_modules
+# IDEs and editors
+/.idea
+*.mwb.bak
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+client/dist
+server/pid
+server/logs
+/typings
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
+
+
+*local.yaml
+config.dev.yaml
+*.mwb.bak
+*.mwb.beforefix
+report
