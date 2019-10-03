@@ -18,8 +18,6 @@ export default class KeysHandle {
                 key = 'DOWN'; break;
         }
 
-        if (key) {
-            Data.setPlayerKey(data.playerId, key, data.status);
-        }
+        Data.setPlayerKey(data.playerId, key, data.status);
     }
 }

@@ -12,28 +12,24 @@ export default class HandleGameData {
 
     static handleInput(dt) {
 
-        // console.log('handle here: ', GameData);
-
         Object.keys(GameData.players).forEach(playerId => {
             const player = GameData.players[playerId];
 
-            // console.log('handle here PLAYER: ', player);
-
             if(HandleGameData.isDown(playerId, 'DOWN')) {
-                player.pos[1] += 200 * dt;
+                player.pos[1] += 100 * dt;
 
             }
 
             if(HandleGameData.isDown(playerId, 'UP')) {
-                player.pos[1] -= 200 * dt;
+                player.pos[1] -= 100 * dt;
             }
 
             if(HandleGameData.isDown(playerId, 'LEFT')) {
-                player.pos[0] -= 200 * dt;
+                player.pos[0] -= 100 * dt;
             }
 
             if(HandleGameData.isDown(playerId, 'RIGHT')) {
-                player.pos[0] += 200 * dt;
+                player.pos[0] += 100 * dt;
             }
 
             if(HandleGameData.isDown(playerId, 'SPACE')) {

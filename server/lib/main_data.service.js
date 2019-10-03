@@ -9,6 +9,10 @@ export default class Data {
         return data;
     }
 
+    static getPlayerData(id) {
+        return data.players[id];
+    }
+
     static deletePlayer(id) {
         if (data.players[id]) {
             delete data.players[id];
@@ -17,13 +21,20 @@ export default class Data {
 
     static setPlayer(id) {
         data.players[id] = {
-            pressedKeys: {}
+            pressedKeys: {},
+            pos: [0, 0]
         };
     }
 
     static setPlayerKey(id, key, status) {
         if (data.players[id]) {
             data.players[id].pressedKeys[key] = status;
+        }
+    }
+
+    static updatePlayerPosition(incomingData) {
+        if (data.players[incomingData.playerId]) {
+            data.players[incomingData.playerId].pos = incomingData.playerData.pos;
         }
     }
 }

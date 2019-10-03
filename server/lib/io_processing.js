@@ -30,8 +30,13 @@ export default class IoProcessing {
 
         this.socket.on('key_down', data => {
             KeysHandle.setKey(data);
+            Data.updatePlayerPosition(data);
         });
 
+        this.socket.on('player_returned_to_game', playerId => {
+            console.log(`player with id = ${playerId} returned to game`);
+            this.ioInstance.emit('update_objects_positions', Data.getData());
+        });
 
         setInterval(() => {
             this.ioInstance.emit('game_data_update', Data.getData());

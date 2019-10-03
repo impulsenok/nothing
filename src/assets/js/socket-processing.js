@@ -17,9 +17,9 @@ export default class SocketProcessing {
         });
 
         socket.on('new_player', newPlayerId => {
-            GameData.players[newPlayerId] = new Player(Sprite, AppInstancesData.resourses);
+            GameData.players[newPlayerId] = new Player(null, Sprite, AppInstancesData.resourses);
             console.log('new player connected: ', newPlayerId);
-
+            socket.emit('update_data_for_new_player', { player: GameData.players[socket.id] });
         });
 
         socket.on('player_disconnected', data => {
@@ -33,10 +33,19 @@ export default class SocketProcessing {
 
             Object.keys(data.players).map(key => {
                 if (!GameData.players[key]) {
-                    GameData.players[key] = new Player(Sprite, AppInstancesData.resourses);
+                    GameData.players[key] = new Player(data.players[key], Sprite, AppInstancesData.resourses);
                 }
 
+                // GameData.players[key].pos = data.players[key].pos;
                 GameData.players[key].pressedKeys = data.players[key].pressedKeys;
+            });
+        });
+
+        socket.on('update_objects_positions', data => {
+            Object.keys(data.players).map(key => {
+                if (key !== socket.id) {
+                    GameData.players[key].pos = data.players[key].pos;
+                }
             });
         });
 
@@ -45,7 +54,8 @@ export default class SocketProcessing {
             socket.emit('key_down', {
                 playerId: socket.id,
                 key: e.code,
-                status: true
+                status: true,
+                playerData: GameData.players[socket.id]
             });
         });
 
@@ -53,8 +63,13 @@ export default class SocketProcessing {
             socket.emit('key_down', {
                 playerId: socket.id,
                 key: e.code,
-                status: false
+                status: false,
+                playerData: GameData.players[socket.id]
             });
+        });
+
+        window.addEventListener('focus', e => {
+            socket.emit('player_returned_to_game', socket.id);
         });
     }
 }
