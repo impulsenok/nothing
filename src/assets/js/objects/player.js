@@ -7,5 +7,7 @@ export default class Player {
         this.pos = playerData && playerData.pos ? playerData.pos : [0, 0];
         this.sprite = new this.Sprite('images/sprites.png', this.resources, [0, 0], [39, 39], 16, [0, 1]);
         this.pressedKeys = {};
+        this.bullets = [];
+        this.lastFire = Date.now();
     }
 }

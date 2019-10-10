@@ -1,6 +1,5 @@
 const GameData = {
     players: {},
-    bullets: [],
     enemies: [],
     explosions: [],
     lastFire: Date.now(),

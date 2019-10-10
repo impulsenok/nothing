@@ -45,6 +45,13 @@ export default class SocketProcessing {
             Object.keys(data.players).map(key => {
                 if (key !== socket.id) {
                     GameData.players[key].pos = data.players[key].pos;
+                    GameData.players[key].bullets.forEach(b1 => {
+                        data.players[key].bullets.map(b2 => {
+                            if (b1.dir === b2.dir) {
+                                b2.pos = b1.pos;
+                            }
+                        })
+                    });
                 }
             });
         });

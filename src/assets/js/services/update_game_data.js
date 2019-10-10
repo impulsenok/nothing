@@ -1,4 +1,5 @@
 import GameData from './game_data.service';
+import Sprite from '../sprite';
 
 export default class HandleGameData {
     constructor() {}
@@ -10,14 +11,13 @@ export default class HandleGameData {
         }
     }
 
-    static handleInput(dt) {
+    static handleInput(dt, resources) {
 
         Object.keys(GameData.players).forEach(playerId => {
             const player = GameData.players[playerId];
 
             if(HandleGameData.isDown(playerId, 'DOWN')) {
                 player.pos[1] += 100 * dt;
-
             }
 
             if(HandleGameData.isDown(playerId, 'UP')) {
@@ -33,20 +33,30 @@ export default class HandleGameData {
             }
 
             if(HandleGameData.isDown(playerId, 'SPACE')) {
-                // let x = GameData.player.pos[0] + GameData.player.sprite.size[0] / 2;
-                // let y = GameData.player.pos[1] + GameData.player.sprite.size[1] / 2;
-                //
-                // GameData.bullets.push({ pos: [x, y],
-                //     dir: 'forward',
-                //     sprite: new Sprite('images/sprites.png', this.resources, [0, 39], [18, 8]) });
-                // GameData.bullets.push({ pos: [x, y],
-                //     dir: 'up',
-                //     sprite: new Sprite('images/sprites.png', this.resources, [0, 50], [9, 5]) });
-                // GameData.bullets.push({ pos: [x, y],
-                //     dir: 'down',
-                //     sprite: new Sprite('images/sprites.png', this.resources, [0, 60], [9, 5]) });
-                //
-                // GameData.lastFire = Date.now();
+                let x = player.pos[0] + player.sprite.size[0] / 2;
+                let y = player.pos[1] + player.sprite.size[1] / 2;
+
+                if ((Date.now() - player.lastFire) > 1000) {
+                    player.bullets.push({
+                        pos: [x, y],
+                        dir: 'forward',
+                        sprite: new Sprite('images/sprites.png', resources, [0, 39], [18, 8])
+                    });
+
+                    player.bullets.push({
+                        pos: [x, y],
+                        dir: 'up',
+                        sprite: new Sprite('images/sprites.png', resources, [0, 50], [9, 5])
+                    });
+
+                    player.bullets.push({
+                        pos: [x, y],
+                        dir: 'down',
+                        sprite: new Sprite('images/sprites.png', resources, [0, 60], [9, 5])
+                    });
+
+                    player.lastFire = Date.now();
+                }
             }
 
         });

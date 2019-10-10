@@ -1,5 +1,7 @@
 // import Sprite from "./sprite";
 import HandleGameData from './services/update_game_data';
+import Sprite from './sprite';
+import GameData from "./services/game_data.service";
 
 export default class CoreProcessing {
     constructor(canvas, ctx, resources, gameData) {
@@ -36,38 +38,52 @@ export default class CoreProcessing {
     // Update game objects
     update(dt) {
         // this.keysHandle.handleInput(dt);
-        HandleGameData.handleInput(dt);
+        HandleGameData.handleInput(dt, this.resources);
         this.updateEntities(dt);
 
-        // this.checkCollisions();
+        this.checkCollisions();
     }
 
     updateEntities(dt) {
         // Update the player sprite animation
         Object.keys(this.gameData.players).map(key => {
             if (this.gameData.players[key]) {
-                this.gameData.players[key].sprite.update(dt);
+                const player = this.gameData.players[key];
+                player.sprite.update(dt);
+
+                // Update all the this.gameData.bullets
+                for(let i=0; i<player.bullets.length; i++) {
+                    const bullet = player.bullets[i];
+
+                    switch(bullet.dir) {
+                        case 'up': bullet.pos[1] -= 300 * dt; break;
+                        case 'down': bullet.pos[1] += 300 * dt; break;
+                        default:
+                            bullet.pos[0] += 300 * dt;
+                    }
+
+                    // Remove the bullet if it goes off screen
+                    if(bullet.pos[1] < 0 || bullet.pos[1] > this.canvas.height ||
+                        bullet.pos[0] > this.canvas.width) {
+                        player.bullets.splice(i, 1);
+                        i--;
+                    }
+                }
             }
         });
 
-        // Update all the this.gameData.bullets
-        // for(let i=0; i<this.gameData.bullets.length; i++) {
-        //     const bullet = this.gameData.bullets[i];
-        //
-        //     switch(bullet.dir) {
-        //         case 'up': bullet.pos[1] -= this.gameSettings.bulletSpeed * dt; break;
-        //         case 'down': bullet.pos[1] += this.gameSettings.bulletSpeed * dt; break;
-        //         default:
-        //             bullet.pos[0] += this.gameSettings.bulletSpeed * dt;
-        //     }
-        //
-        //     // Remove the bullet if it goes off screen
-        //     if(bullet.pos[1] < 0 || bullet.pos[1] > this.canvas.height ||
-        //         bullet.pos[0] > this.canvas.width) {
-        //         this.gameData.bullets.splice(i, 1);
-        //         i--;
-        //     }
-        // }
+        // Update all the this.gameData.explosions
+        if (this.gameData.explosions.length > 0) {
+            for(let i = 0; i < this.gameData.explosions.length; i++) {
+                this.gameData.explosions[i].sprite.update(dt);
+
+                // Remove if animation is done
+                if(this.gameData.explosions[i].sprite.done) {
+                    this.gameData.explosions.splice(i, 1);
+                    i--;
+                }
+            }
+        }
 
         // Update all the this.gameData.enemies
         // for(let i=0; i<this.gameData.enemies.length; i++) {
@@ -77,17 +93,6 @@ export default class CoreProcessing {
         //     // Remove if off screen
         //     if(this.gameData.enemies[i].pos[0] + this.gameData.enemies[i].sprite.size[0] < 0) {
         //         this.gameData.enemies.splice(i, 1);
-        //         i--;
-        //     }
-        // }
-
-        // Update all the this.gameData.explosions
-        // for(let i=0; i<this.gameData.explosions.length; i++) {
-        //     this.gameData.explosions[i].sprite.update(dt);
-        //
-        //     // Remove if animation is done
-        //     if(this.gameData.explosions[i].sprite.done) {
-        //         this.gameData.explosions.splice(i, 1);
         //         i--;
         //     }
         // }
@@ -105,64 +110,78 @@ export default class CoreProcessing {
             pos2[0] + size2[0], pos2[1] + size2[1]);
     }
 
-    // checkCollisions() {
-    //     this.checkPlayerBounds();
-    //
-    //     // Run collision detection for all this.gameData.enemies and this.gameData.bullets
-    //     for(let i=0; i<this.gameData.enemies.length; i++) {
-    //         let pos = this.gameData.enemies[i].pos;
-    //         let size = this.gameData.enemies[i].sprite.size;
-    //
-    //         for(let j=0; j<this.gameData.bullets.length; j++) {
-    //             let pos2 = this.gameData.bullets[j].pos;
-    //             let size2 = this.gameData.bullets[j].sprite.size;
-    //
-    //             if(this.boxCollides(pos, size, pos2, size2)) {
-    //                 // Remove the enemy
-    //                 this.gameData.enemies.splice(i, 1);
-    //                 i--;
-    //
-    //                 // Add an explosion
-    //                 this.gameData.explosions.push({
-    //                     pos: pos,
-    //                     sprite: new Sprite('images/sprites.png',
-    //                         this.resources,
-    //                         [0, 117],
-    //                         [39, 39],
-    //                         16,
-    //                         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    //                         null,
-    //                         true)
-    //                 });
-    //
-    //                 // Remove the bullet and stop this iteration
-    //                 this.gameData.bullets.splice(j, 1);
-    //                 break;
-    //             }
-    //         }
-    //
-    //         if(this.boxCollides(pos, size, this.gameData.player.pos, this.gameData.player.sprite.size)) {
-    //             this.gameOver();
-    //         }
-    //     }
-    // }
+    checkCollisions() {
+        this.checkPlayerBounds();
 
-    // checkPlayerBounds() {
-    //     // Check bounds
-    //     if(this.gameData.player.pos[0] < 0) {
-    //         this.gameData.player.pos[0] = 0;
-    //     }
-    //     else if(this.gameData.player.pos[0] > this.canvas.width - this.gameData.player.sprite.size[0]) {
-    //         this.gameData.player.pos[0] = this.canvas.width - this.gameData.player.sprite.size[0];
-    //     }
-    //
-    //     if(this.gameData.player.pos[1] < 0) {
-    //         this.gameData.player.pos[1] = 0;
-    //     }
-    //     else if(this.gameData.player.pos[1] > this.canvas.height - this.gameData.player.sprite.size[1]) {
-    //         this.gameData.player.pos[1] = this.canvas.height - this.gameData.player.sprite.size[1];
-    //     }
-    // }
+        // Run collision detection for all this.gameData.enemies and this.gameData.bullets
+        Object.keys(this.gameData.players).map(key => {
+            const player = this.gameData.players[key];
+            // let playerPos = player.pos;
+            // let playerSize = player.sprite.size;
+
+            if (player) {
+                for(let j = 0; j < player.bullets.length; j++) {
+                    let playerBulletPos = player.bullets[j].pos;
+                    let playerBulletSize = player.bullets[j].sprite.size;
+
+                    Object.keys(this.gameData.players).map(anotherPlayerKey => {
+                        const anotherPlayer = this.gameData.players[anotherPlayerKey];
+                        let anotherPlayerPos = anotherPlayer.pos;
+                        let anotherPlayerSize = anotherPlayer.sprite.size;
+
+                        if (key !== anotherPlayerKey && this.boxCollides(anotherPlayerPos, anotherPlayerSize, playerBulletPos, playerBulletSize)) {
+                            // Add an explosion
+
+                            // this.gameData.players[anotherPlayerKey].pos = [200, 200];
+
+                            this.gameData.explosions.push({
+                                pos: anotherPlayerPos,
+                                sprite: new Sprite('images/sprites.png',
+                                    this.resources,
+                                    [0, 117],
+                                    [39, 39],
+                                    16,
+                                    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                                    null,
+                                    true)
+                            });
+
+                            // Remove the bullet and stop this iteration
+                            player.bullets.splice(j, 1);
+                            // kill another player event here.
+                        }
+                    });
+                }
+            }
+        });
+            // if(this.boxCollides(pos, size, this.gameData.player.pos, this.gameData.player.sprite.size)) {
+            //     this.gameOver();
+            // }
+    }
+
+    checkPlayerBounds() {
+
+        Object.keys(this.gameData.players).map(key => {
+            if (this.gameData.players[key]) {
+                const player = this.gameData.players[key];
+
+                // Check bounds
+                if(player.pos[0] < 0) {
+                    player.pos[0] = 0;
+                }
+                else if(player.pos[0] > this.canvas.width - player.sprite.size[0]) {
+                    player.pos[0] = this.canvas.width - player.sprite.size[0];
+                }
+
+                if(player.pos[1] < 0) {
+                    player.pos[1] = 0;
+                }
+                else if(player.pos[1] > this.canvas.height - player.sprite.size[1]) {
+                    player.pos[1] = this.canvas.height - player.sprite.size[1];
+                }
+            }
+        });
+    }
 
     // Draw everything
     render() {
@@ -172,21 +191,22 @@ export default class CoreProcessing {
         Object.keys(this.gameData.players).map(key => {
             if (this.gameData.players[key]) {
                 this.renderEntity(this.gameData.players[key]);
+                this.renderEntities(this.gameData.players[key].bullets);
             }
         });
 
         // this.renderEntity(this.gameData.player);
 
-        // this.renderEntities(this.gameData.bullets);
+
         // this.renderEntities(this.gameData.enemies);
-        // this.renderEntities(this.gameData.explosions);
+        this.renderEntities(this.gameData.explosions);
     }
 
-    // renderEntities(list) {
-    //     for(let i=0; i<list.length; i++) {
-    //         this.renderEntity(list[i]);
-    //     }
-    // }
+    renderEntities(list) {
+        for(let i=0; i<list.length; i++) {
+            this.renderEntity(list[i]);
+        }
+    }
 
     renderEntity(entity) {
         this.ctx.save();
@@ -205,7 +225,7 @@ export default class CoreProcessing {
 // Reset game to original state
 //     reset() {
 //         document.getElementById('game-over').style.display = 'none';
-//         document.getElementById('game-over-oveconsole.log(\'>>> TYPE\', this.type);rlay').style.display = 'none';
+//         document.getElementById('game-over-overlay').style.display = 'none';
 //         this.gameData.isGameOver = false;
 //         this.gameData.gameTime = 0;
 //
