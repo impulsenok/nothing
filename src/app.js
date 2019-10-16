@@ -5,7 +5,7 @@ import AppInstancesData from './assets/js/services/app_data.service';
 import * as io from "./assets/js/soscket-io";
 import SocketProcessing from './assets/js/socket-processing';
 
-const socket = io('http://172.16.1.29:9000');
+const socket = io('http://172.16.1.175:9000');
 SocketProcessing.init(socket);
 
 const canvas = document.getElementById("battle-ground");
@@ -15,7 +15,8 @@ AppInstancesData.resourses = new ResourcesProcessing();
 
 AppInstancesData.resourses.load([
     'images/sprites.png',
-    'images/terrain.png'
+    'images/terrain.png',
+    'images/good_enemies_4.png'
 ]);
 
 // The main game loop

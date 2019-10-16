@@ -7,8 +7,16 @@ export default class SpriteProcessing {
         this._index = 0;
         this.url = url;
         this.resources = resources;
-        this.dir = dir || 'horizontal';
+        this.dir = dir;
         this.once = once;
+    }
+
+    get direction() {
+        return this.dir;
+    }
+
+    setDirection(direction) {
+        this.dir = direction;
     }
 
     update(dt) {
@@ -36,11 +44,21 @@ export default class SpriteProcessing {
         let x = this.pos[0];
         let y = this.pos[1];
 
-        if (this.dir === 'vertical') {
-            y += frame * this.size[1];
-        }
-        else {
-            x += frame * this.size[0];
+        x += frame * this.size[0];
+
+        if (this.dir) {
+
+            switch (this.dir) {
+                case 'DOWN': y = 0;
+                    break;
+                case 'LEFT': y = this.size[1];
+                    break;
+                case 'RIGHT': y = this.size[1] * 2;
+                    break;
+                case 'UP': y = this.size[1] * 3;
+                    break;
+                default: y = 0;
+            }
         }
 
         ctx.drawImage(this.resources.get(this.url),

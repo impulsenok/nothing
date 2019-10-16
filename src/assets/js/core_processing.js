@@ -56,8 +56,10 @@ export default class CoreProcessing {
                     const bullet = player.bullets[i];
 
                     switch(bullet.dir) {
-                        case 'up': bullet.pos[1] -= 300 * dt; break;
-                        case 'down': bullet.pos[1] += 300 * dt; break;
+                        case 'UP': bullet.pos[1] -= 300 * dt; break;
+                        case 'DOWN': bullet.pos[1] += 300 * dt; break;
+                        case 'LEFT': bullet.pos[0] -= 300 * dt; break;
+                        case 'RIGHT': bullet.pos[0] += 300 * dt; break;
                         default:
                             bullet.pos[0] += 300 * dt;
                     }
@@ -148,6 +150,7 @@ export default class CoreProcessing {
 
                             // Remove the bullet and stop this iteration
                             player.bullets.splice(j, 1);
+                            anotherPlayer.isDead = true;
                             // kill another player event here.
                         }
                     });

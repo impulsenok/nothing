@@ -7,33 +7,26 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" type="text/css" href="styles/styles.css" media="screen" />
 
     </head>
     <body>
+        <div class="container">
+            <!--PlayGround here -->
+            <canvas id="battle-ground" width="1000" height="600"></canvas>
 
-        <!--PlayGround here -->
-        <canvas id="battle-ground" width="700" height="700"></canvas>
-
-
-        <div id="game-over-overlay">
-        </div>
-
-        <!--<div id="game-over">-->
-            <!--<h1>GAME OVER</h1>-->
-            <!--<button id="play-again">Play Again</button>-->
-        <!--</div>-->
-
-        <div class="wrapper">
-            <div id="instructions">
-                <div>
-                    move with <span class="key">arrows</span> or <span class="key">wasd</span>
+            <div class="info-wrapper">
+                <div id="instructions">
+                    <div>
+                        move with <span class="key">arrows</span> or <span class="key">wasd</span>
+                    </div>
+                    <div>
+                        shoot with <span class="key">space</span>
+                    </div>
                 </div>
-                <div>
-                    shoot with <span class="key">space</span>
-                </div>
+
+                <div id="score"></div>
             </div>
-
-            <div id="score"></div>
         </div>
     </body>
 
